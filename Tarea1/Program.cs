@@ -30,6 +30,7 @@ namespace Tarea1
         {
 
             Bitmap b1 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), archivo));
+            Bitmap b2 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), archivo));
             int height = b1.Height, width = b1.Width, promedio;
             int[,] mat = new int[height, width];
             double funcion;
@@ -38,8 +39,10 @@ namespace Tarea1
                 {
                     funcion = ((.2125 * b1.GetPixel(i, j).R) + (.7154 * b1.GetPixel(i, j).G) + (.0721 * b1.GetPixel(i, j).B));
                     promedio = Convert.ToInt32(funcion);
+                    b2.SetPixel(i, j, Color.FromArgb(b1.GetPixel(i,j).A, promedio, promedio, promedio));
                     mat[j, i] = promedio;
                 }
+            b2.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Gray.png"));
             return mat;
         }
 
@@ -50,10 +53,10 @@ namespace Tarea1
             for (int i = 0; i < bin.GetLength(0); i++)
                 for (int j = 0; j < bin.GetLength(1); j++)
                 {
-                    if (bin[i,j] < 220)
-                        bin[i, j] = 1;
-                    else
+                    if (bin[i,j] < 30)
                         bin[i, j] = 0;
+                    else
+                        bin[i, j] = 1;
                 }
             return bin;
         }
