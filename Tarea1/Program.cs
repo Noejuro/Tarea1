@@ -19,7 +19,7 @@ namespace Tarea1
             //objeto.imprimir(matrix);
             //Sacamos matriz binaria
             int[,] binarizado = objeto.binarizar(matrix);
-            objeto.imprimir(binarizado);
+            //objeto.imprimir(binarizado);
             objeto.metricas(matrix);
             //objeto.imprimir(binarizado);
 
@@ -48,16 +48,23 @@ namespace Tarea1
 
         public int[,] binarizar(int[,] mat)
         {
+            Bitmap b1 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "image.png"));
             int[,] bin = new int[mat.GetLength(0), mat.GetLength(1)];
             bin = (int[,])mat.Clone();
             for (int i = 0; i < bin.GetLength(0); i++)
                 for (int j = 0; j < bin.GetLength(1); j++)
                 {
-                    if (bin[i,j] < 30)
+                    if (bin[i, j] < 30) { 
                         bin[i, j] = 0;
+                        b1.SetPixel(j, i, Color.White);
+                    }
                     else
+                    {
                         bin[i, j] = 1;
+                        b1.SetPixel(j , i, Color.Black);
+                    }
                 }
+            b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Black % White.png"));
             return bin;
         }
 
