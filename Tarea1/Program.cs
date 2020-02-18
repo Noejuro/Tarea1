@@ -10,6 +10,7 @@ namespace Tarea1
 {
     class Program
     {
+        public int P1X, P1Y, P2X, P2Y; 
         static void Main(string[] args)
         {
             Program objeto = new Program();
@@ -19,6 +20,10 @@ namespace Tarea1
             //Sacamos matriz binaria
             int[,] binarizado = objeto.binarizar(matrix);
             objeto.imprimir(binarizado);
+            objeto.metricas(matrix);
+            //objeto.imprimir(binarizado);
+
+            Console.ReadLine();
         }
 
         public int[,] enteros(string archivo)
@@ -40,33 +45,42 @@ namespace Tarea1
 
         public int[,] binarizar(int[,] mat)
         {
-            for (int i = 0; i < mat.GetLength(0); i++)
-                for (int j = 0; j < mat.GetLength(1); j++)
+            int[,] bin = new int[mat.GetLength(0), mat.GetLength(1)];
+            bin = (int[,])mat.Clone();
+            for (int i = 0; i < bin.GetLength(0); i++)
+                for (int j = 0; j < bin.GetLength(1); j++)
                 {
-                    if (mat[i,j] < 220)
-                        mat[i, j] = 1;
+                    if (bin[i,j] < 220)
+                        bin[i, j] = 1;
                     else
-                        mat[i, j] = 0;
+                        bin[i, j] = 0;
                 }
-            return mat;
+            return bin;
         }
 
-        public void imprimir(int[,] matrix)
+        public void imprimir(int[,] impr)
         {
-            for (int i = 0; i < matrix.GetLength(0) - 1; i++)
+            for (int i = 0; i < impr.GetLength(0) - 1; i++)
             {
-                for (int j = 0; j < matrix.GetLength(1) - 1; j++)
-                    Console.Write(matrix[i, j]);
+                for (int j = 0; j < impr.GetLength(1) - 1; j++)
+                    Console.Write(impr[i, j]);
                 Console.Write("\n");
             }
             Console.ReadLine();
         }
     
-        public void metricas(int[,] matrix)
+        public void metricas(int[,] matriz)
         {
             Random r = new Random();
-            int coordX = r.Next(0, matrix.GetLength(1));
-            int coordY = r.Next(0, matrix.GetLength(0));
+            P1X = r.Next(0, matriz.GetLength(1));
+            P1Y = r.Next(0, matriz.GetLength(0));
+
+            P2X = r.Next(0, matriz.GetLength(1));
+            P2Y = r.Next(0, matriz.GetLength(0));
+
+            Console.WriteLine("Primer punto\n" + "x: " + P1X + " y:" + P1Y + "\nIntensidad: " + matriz[P1Y,P1X] );
+            Console.WriteLine("\nSegundo punto\n" + "x: " + P2X + " y:" + P2Y + "\nIntensidad: " + matriz[P2Y,P2X]);
+
         }
     }
 }
