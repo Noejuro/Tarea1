@@ -13,18 +13,204 @@ namespace Tarea1
         public int P1X, P1Y, P2X, P2Y; 
         static void Main(string[] args)
         {
+            Boolean chequeo = false, termino = false;
+            int n = 2;
             Program objeto = new Program();
             //Sacamos matriz de enteros
             int[,] matrix = objeto.enteros("image.png");
-            //objeto.imprimir(matrix);
+
             //Sacamos matriz binaria
             int[,] binarizado = objeto.binarizar(matrix);
-            //objeto.imprimir(binarizado);
+            
             objeto.metricas(matrix);
-            //objeto.imprimir(binarizado);
-            objeto.camino(binarizado);
+            
+            int[,] componentes = new int[binarizado.GetLength(0), binarizado.GetLength(1)];
+            componentes = (int[,])binarizado.Clone();
+
+            do
+            {
+                chequeo = false;
+                termino = false;
+
+                for (int i = 0; i < matrix.GetLength(0); i++)
+                    for (int j = 0; j < matrix.GetLength(1); j++)
+                        {
+                            if (componentes[i, j] == 1)
+                            {
+                                componentes = objeto.checar8(i, j, n, componentes);
+                                chequeo = true;
+                                j = matrix.GetLength(0);
+                                i = matrix.GetLength(1);
+                                break;
+                            }
+                            chequeo = false;
+                        }
+                n++;
+            } while (chequeo == true);
+
+            objeto.crearImagenComp(componentes, n, 8);
+
+            componentes = (int[,])binarizado.Clone();
+
+            n = 2;
+            do
+            {
+                chequeo = false;
+                termino = false;
+
+                for (int i = 0; i < matrix.GetLength(0); i++)
+                    for (int j = 0; j < matrix.GetLength(1); j++)
+                    {
+                        if (componentes[i, j] == 1)
+                        {
+                            componentes = objeto.checar4(i, j, n, componentes);
+                            chequeo = true;
+                            j = matrix.GetLength(0);
+                            i = matrix.GetLength(1);
+                            break;
+                        }
+                        chequeo = false;
+                    }
+                n++;
+            } while (chequeo == true);
+
+            objeto.crearImagenComp(componentes, n, 4);
+
 
             Console.ReadLine();
+        }
+
+
+        public int[,] checar8(int x, int y, int n, int[,] matriz)
+        {
+            //Console.WriteLine(x + " " + y);
+            matriz[x, y] = n;
+
+            if (x != 0)
+            {
+                if (matriz[x - 1, y] == 1)
+                {
+                    //Console.Write("Arriba\n");
+                    checar8((x - 1), y, n, matriz);
+                }
+                if (y != matriz.GetLength(1)-1)
+                    if (matriz[x - 1, y + 1] == 1)
+                    {
+                        //Console.Write("Arriba derecha\n");
+                        checar8((x - 1), (y + 1), n, matriz);
+                    }
+            }
+            if (y != matriz.GetLength(1) - 1)
+                if (matriz[x, y + 1] == 1)
+                {
+                    //Console.Write("Derecha\n");
+                    checar8(x, (y + 1), n, matriz);
+                }
+            if (x != matriz.GetLength(0) - 1)
+            {
+                if (y != matriz.GetLength(1) - 1)
+                    if (matriz[x + 1, y + 1] == 1)
+                    {
+                        //Console.Write("Abajo derecha\n");
+                        checar8((x + 1), (y + 1), n, matriz);
+                    }
+                if (matriz[x + 1, y] == 1)
+                {
+                    //Console.Write("Abajo\n");
+                    checar8((x + 1), y, n, matriz);
+                }
+            }
+            if (y != 0)
+            {
+                if (x != matriz.GetLength(0) - 1)
+                    if (matriz[x + 1, y - 1] == 1)
+                    {
+                        //Console.Write("Abajo izquierda\n");
+                        checar8((x + 1), (y - 1), n, matriz);
+                    }
+                if (matriz[x, y - 1] == 1)
+                {
+                    //Console.Write("Izquierda\n");
+                    checar8(x, (y - 1), n, matriz);
+                }
+                if (x != 0)
+                    if (matriz[x - 1, y - 1] == 1)
+                    {
+                        //Console.Write("Arriba Izquierda\n");
+                        checar8((x - 1), (y - 1), n, matriz);
+                    }
+            }
+            return matriz;
+        }
+
+        public int[,] checar4(int x, int y, int n, int[,] matriz)
+        {
+            //Console.WriteLine(x + " " + y);
+            matriz[x, y] = n;
+
+            if (x != 0)
+            {
+                if (matriz[x - 1, y] == 1)
+                {
+                    //Console.Write("Arriba\n");
+                    checar4((x - 1), y, n, matriz);
+                }
+            }
+            if (y != matriz.GetLength(1) - 1)
+                if (matriz[x, y + 1] == 1)
+                {
+                    //Console.Write("Derecha\n");
+                    checar4(x, (y + 1), n, matriz);
+                }
+            if (x != matriz.GetLength(0) - 1)
+            {
+                if (matriz[x + 1, y] == 1)
+                {
+                    //Console.Write("Abajo\n");
+                    checar4((x + 1), y, n, matriz);
+                }
+            }
+            if (y != 0)
+            {
+                if (matriz[x, y - 1] == 1)
+                {
+                    //Console.Write("Izquierda\n");
+                    checar4(x, (y - 1), n, matriz);
+                }
+            }
+            return matriz;
+        }
+
+        public void crearImagenComp(int[,] mat, int n, int comp)
+        {
+            Bitmap b1 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Black and White.png"));
+            for (int i = 0; i < mat.GetLength(0); i++)
+            {
+                for (int j = 0; j < mat.GetLength(1); j++)
+                {
+                    if (mat[i, j] == 1)
+                        b1.SetPixel(j, i, Color.Red);
+                    if (mat[i, j] == 2)
+                        b1.SetPixel(j, i, Color.Blue);
+                    if (mat[i, j] == 3)
+                        b1.SetPixel(j, i, Color.Gold);
+                    if (mat[i, j] == 4)
+                        b1.SetPixel(j, i, Color.Orange);
+                    if (mat[i, j] == 5)
+                        b1.SetPixel(j, i, Color.Green);
+                    if (mat[i, j] == 6)
+                        b1.SetPixel(j, i, Color.Brown);
+                    if (mat[i, j] == 7)
+                        b1.SetPixel(j, i, Color.Purple);
+                    if (mat[i, j] == 8)
+                        b1.SetPixel(j, i, Color.Aqua);
+                    if (mat[i, j] == 9)
+                        b1.SetPixel(j, i, Color.DarkCyan);
+                }
+            }
+            b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Componentes" + comp +".png"));
+            Console.WriteLine("Componentes creado");
+            Console.WriteLine("Numero de componentes en N" +comp +": " + (n - 3));
         }
 
         public int[,] enteros(string archivo)
@@ -73,9 +259,9 @@ namespace Tarea1
 
         public void imprimir(int[,] impr)
         {
-            for (int i = 0; i < impr.GetLength(0) - 1; i++)
+            for (int i = 0; i < impr.GetLength(0); i++)
             {
-                for (int j = 0; j < impr.GetLength(1) - 1; j++)
+                for (int j = 0; j < impr.GetLength(1); j++)
                     Console.Write(impr[i, j]);
                 Console.Write("\n");
             }
@@ -99,13 +285,15 @@ namespace Tarea1
         public void camino(int[,] matriz)
         {
             Bitmap b1 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Gray.png"));
+            int[,] camino = new int[matriz.GetLength(0), matriz.GetLength(1)];
+            camino = (int[,])matriz.Clone();
             int difX = Math.Abs(P1X - P2X);
             int difY = Math.Abs(P1Y - P2Y);
             if (P1X < P2X)
             {
                 for(int i = P1X; i <= P2X; i++)
                 {
-                    matriz[P1Y, i] = 2;
+                    camino[P1Y, i] = 2;
                     b1.SetPixel(P1Y, i, Color.Gold);
                 }
             } 
@@ -113,7 +301,7 @@ namespace Tarea1
             {
                 for (int i = P1X; i >= P2X; i--)
                 {
-                    matriz[P1Y, i] = 2;
+                    camino[P1Y, i] = 2;
                     b1.SetPixel(P1Y, i, Color.Gold);
                 }
             }
@@ -121,7 +309,7 @@ namespace Tarea1
             {
                 for (int i = P1Y; i <= P2Y; i++)
                 {
-                    matriz[i, P2X] = 2;
+                    camino[i, P2X] = 2;
                     b1.SetPixel(i, P2X, Color.Gold);
                 }
             }
@@ -129,7 +317,7 @@ namespace Tarea1
             {
                 for (int i = P1Y; i >= P2Y; i--)
                 {
-                    matriz[i, P2X] = 2;
+                    camino[i, P2X] = 2;
                     b1.SetPixel(i, P2X, Color.Gold);
                 }
             }
