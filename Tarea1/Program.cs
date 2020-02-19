@@ -22,6 +22,7 @@ namespace Tarea1
             //objeto.imprimir(binarizado);
             objeto.metricas(matrix);
             //objeto.imprimir(binarizado);
+            objeto.camino(binarizado);
 
             Console.ReadLine();
         }
@@ -43,6 +44,7 @@ namespace Tarea1
                     mat[j, i] = promedio;
                 }
             b2.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Gray.png"));
+            Console.WriteLine("Escala de grises creado");
             return mat;
         }
 
@@ -64,7 +66,8 @@ namespace Tarea1
                         b1.SetPixel(j , i, Color.Black);
                     }
                 }
-            b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Black % White.png"));
+            b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Black and White.png"));
+            Console.WriteLine("Blanco y negro creado");
             return bin;
         }
 
@@ -91,6 +94,49 @@ namespace Tarea1
             Console.WriteLine("Primer punto\n" + "x: " + P1X + " y:" + P1Y + "\nIntensidad: " + matriz[P1Y,P1X] );
             Console.WriteLine("\nSegundo punto\n" + "x: " + P2X + " y:" + P2Y + "\nIntensidad: " + matriz[P2Y,P2X]);
 
+        }
+
+        public void camino(int[,] matriz)
+        {
+            Bitmap b1 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Gray.png"));
+            int difX = Math.Abs(P1X - P2X);
+            int difY = Math.Abs(P1Y - P2Y);
+            if (P1X < P2X)
+            {
+                for(int i = P1X; i <= P2X; i++)
+                {
+                    matriz[P1Y, i] = 2;
+                    b1.SetPixel(P1Y, i, Color.Gold);
+                }
+            } 
+            else
+            {
+                for (int i = P1X; i >= P2X; i--)
+                {
+                    matriz[P1Y, i] = 2;
+                    b1.SetPixel(P1Y, i, Color.Gold);
+                }
+            }
+            if(P1Y < P2Y)
+            {
+                for (int i = P1Y; i <= P2Y; i++)
+                {
+                    matriz[i, P2X] = 2;
+                    b1.SetPixel(i, P2X, Color.Gold);
+                }
+            }
+            else
+            {
+                for (int i = P1Y; i >= P2Y; i--)
+                {
+                    matriz[i, P2X] = 2;
+                    b1.SetPixel(i, P2X, Color.Gold);
+                }
+            }
+            b1.SetPixel(P1Y, P1X, Color.Green);
+            b1.SetPixel(P2Y, P2X, Color.Red);
+            b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Camino.png"));
+            Console.WriteLine("Camino creado");
         }
     }
 }
