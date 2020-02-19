@@ -23,6 +23,8 @@ namespace Tarea1
             int[,] binarizado = objeto.binarizar(matrix);
             
             objeto.metricas(matrix);
+
+            objeto.camino(matrix);
             
             int[,] componentes = new int[binarizado.GetLength(0), binarizado.GetLength(1)];
             componentes = (int[,])binarizado.Clone();
@@ -49,6 +51,7 @@ namespace Tarea1
             } while (chequeo == true);
 
             objeto.crearImagenComp(componentes, n, 8);
+            String texto = "Componentes en N8: " + (n - 3);
 
             componentes = (int[,])binarizado.Clone();
 
@@ -74,6 +77,13 @@ namespace Tarea1
                 n++;
             } while (chequeo == true);
 
+            String  texto2 = "Componentes en N4: " + (n - 3);
+            using (StreamWriter writer = new StreamWriter(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Componentes.txt")))
+            {
+                writer.WriteLine(texto);
+                writer.WriteLine(texto2);
+            }
+            Console.WriteLine("TXT componentes creado");
             objeto.crearImagenComp(componentes, n, 4);
 
 
@@ -209,8 +219,6 @@ namespace Tarea1
                 }
             }
             b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Componentes" + comp +".png"));
-            Console.WriteLine("Componentes creado");
-            Console.WriteLine("Numero de componentes en N" +comp +": " + (n - 3));
         }
 
         public int[,] enteros(string archivo)
@@ -277,8 +285,8 @@ namespace Tarea1
             P2X = r.Next(0, matriz.GetLength(1));
             P2Y = r.Next(0, matriz.GetLength(0));
 
-            Console.WriteLine("Primer punto\n" + "x: " + P1X + " y:" + P1Y + "\nIntensidad: " + matriz[P1Y,P1X] );
-            Console.WriteLine("\nSegundo punto\n" + "x: " + P2X + " y:" + P2Y + "\nIntensidad: " + matriz[P2Y,P2X]);
+            Console.WriteLine("\nPrimer punto\n" + "x: " + P1X + " y:" + P1Y + "\nIntensidad: " + matriz[P1Y,P1X] );
+            Console.WriteLine("\nSegundo punto\n" + "x: " + P2X + " y:" + P2Y + "\nIntensidad: " + matriz[P2Y,P2X] + "\n");
 
         }
 
