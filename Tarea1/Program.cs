@@ -18,7 +18,6 @@ namespace Tarea1
             Program objeto = new Program();
             //Sacamos matriz de enteros
             int[,] matrix = objeto.enteros("image.png");
-
             //Sacamos matriz binaria
             int[,] binarizado = objeto.binarizar(matrix);
             
@@ -85,7 +84,9 @@ namespace Tarea1
             }
             Console.WriteLine("TXT componentes creado");
             objeto.crearImagenComp(componentes, n, 4);
+            objeto.promedio(matrix);
 
+            Console.WriteLine("Todos los archivos han sido creados");
 
             Console.ReadLine();
         }
@@ -93,7 +94,6 @@ namespace Tarea1
 
         public int[,] checar8(int x, int y, int n, int[,] matriz)
         {
-            //Console.WriteLine(x + " " + y);
             matriz[x, y] = n;
 
             if (x != 0)
@@ -226,6 +226,7 @@ namespace Tarea1
 
             Bitmap b1 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), archivo));
             Bitmap b2 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), archivo));
+            Bitmap b3 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), archivo));
             int height = b1.Height, width = b1.Width, promedio;
             int[,] mat = new int[height, width];
             double funcion;
@@ -235,10 +236,13 @@ namespace Tarea1
                     funcion = ((.2125 * b1.GetPixel(i, j).R) + (.7154 * b1.GetPixel(i, j).G) + (.0721 * b1.GetPixel(i, j).B));
                     promedio = Convert.ToInt32(funcion);
                     b2.SetPixel(i, j, Color.FromArgb(b1.GetPixel(i,j).A, promedio, promedio, promedio));
+                    b3.SetPixel(i, j, Color.FromArgb(b1.GetPixel(i, j).A, 255 - promedio, 255 - promedio, 255 - promedio));
                     mat[j, i] = promedio;
                 }
             b2.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Gray.png"));
+            b3.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Negative.png"));
             Console.WriteLine("Escala de grises creado");
+            Console.WriteLine("Negativo creado");
             return mat;
         }
 
@@ -270,7 +274,7 @@ namespace Tarea1
             for (int i = 0; i < impr.GetLength(0); i++)
             {
                 for (int j = 0; j < impr.GetLength(1); j++)
-                    Console.Write(impr[i, j]);
+                    Console.Write(impr[i, j] + " ");
                 Console.Write("\n");
             }
             Console.ReadLine();
@@ -333,6 +337,56 @@ namespace Tarea1
             b1.SetPixel(P2Y, P2X, Color.Red);
             b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Camino.png"));
             Console.WriteLine("Camino creado");
+        }
+    
+        public void promedio(int[,] mat)
+        {
+            Bitmap b1 = new Bitmap(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Gray.png"));
+            //                              X Maxima         Y Maxima
+            int[,] promedio = new int[mat.GetLength(0), mat.GetLength(1)];
+            promedio = (int[,])mat.Clone();
+            
+            int[,] resultado = new int[mat.GetLength(0), mat.GetLength(1)];
+            resultado = (int[,])mat.Clone();
+            double suma = 0;
+            int res = 0;
+            
+            for (int x = 0; x < mat.GetLength(0); x++)
+            {
+                for(int y = 0; y < mat.GetLength(1); y++)
+                {
+
+                    if (x != 0)
+                    {
+                        suma += promedio[x - 1, y];
+                        if (y != promedio.GetLength(1) - 1)
+                            suma += promedio[x - 1, y + 1];
+                    }
+                    if (y != promedio.GetLength(1) - 1)
+                        suma += promedio[x, y + 1];
+
+                    if (x != promedio.GetLength(0) - 1)
+                    {
+                        if (y != promedio.GetLength(1) - 1)
+                            suma += promedio[x + 1, y + 1];
+                        suma += promedio[x + 1, y];
+                    }
+                    if (y != 0)
+                    {
+                        if (x != promedio.GetLength(0) - 1)
+                            suma += promedio[x + 1, y - 1];
+                        suma += promedio[x, y - 1];
+                        if (x != 0)
+                            suma += promedio[x - 1, y - 1];
+                    }
+                    res = (Int32)Math.Round(suma/8);
+                    resultado[x, y] = res;
+                    b1.SetPixel(y, x, Color.FromArgb(b1.GetPixel(y, x).A, res, res, res));
+                    suma = 0; res = 0;
+                }
+            }
+            b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Average.png"));
+            Console.WriteLine("Promedio creado");
         }
     }
 }
