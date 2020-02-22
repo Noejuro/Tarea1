@@ -82,11 +82,10 @@ namespace Tarea1
                 writer.WriteLine(texto);
                 writer.WriteLine(texto2);
             }
-            Console.WriteLine("TXT componentes creado");
             objeto.crearImagenComp(componentes, n, 4);
             objeto.promedio(matrix);
 
-            Console.WriteLine("Todos los archivos han sido creados");
+            Console.WriteLine("\nTodos los archivos han sido creados\nPresiona ENTER para salir");
 
             Console.ReadLine();
         }
@@ -241,8 +240,6 @@ namespace Tarea1
                 }
             b2.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Gray.png"));
             b3.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Negative.png"));
-            Console.WriteLine("Escala de grises creado");
-            Console.WriteLine("Negativo creado");
             return mat;
         }
 
@@ -265,7 +262,6 @@ namespace Tarea1
                     }
                 }
             b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Black and White.png"));
-            Console.WriteLine("Blanco y negro creado");
             return bin;
         }
 
@@ -282,15 +278,35 @@ namespace Tarea1
     
         public void metricas(int[,] matriz)
         {
+            //Declaracion de variables
+            double distanciaEuclidiana, distanciaManhattan, distanciaVa;
             Random r = new Random();
+            //Generación de pixeles aleatorios para realizar operaciones de métricas entre dos pixeles
             P1X = r.Next(0, matriz.GetLength(1));
             P1Y = r.Next(0, matriz.GetLength(0));
 
             P2X = r.Next(0, matriz.GetLength(1));
             P2Y = r.Next(0, matriz.GetLength(0));
 
+            //Calculo para distancia Euclideana
+            distanciaEuclidiana = Math.Sqrt((Math.Pow((P2X - P1X), 2)) + (Math.Pow((P2Y - P1Y), 2)));
+            //Calculo para distancia Manhattan d(p,q)=|q1-p1|+|q2-p2|
+            distanciaManhattan = (Math.Abs((P2X - P1X)) + Math.Abs((P2Y - P1Y)));
+            //Calculo para distancia  de Máximo valor absoluto d(p,q)=MAX(|qi-pi|)
+            if (Math.Abs((P2X - P1X)) > Math.Abs((P2Y - P1Y)))
+            {
+                distanciaVa = Math.Abs((P2X - P1X));
+            }
+            else
+            {
+                distanciaVa = Math.Abs((P2Y - P1Y));
+            }
+            //Impresión de resultados
             Console.WriteLine("\nPrimer punto\n" + "x: " + P1X + " y:" + P1Y + "\nIntensidad: " + matriz[P1Y,P1X] );
             Console.WriteLine("\nSegundo punto\n" + "x: " + P2X + " y:" + P2Y + "\nIntensidad: " + matriz[P2Y,P2X] + "\n");
+            Console.WriteLine("\nDistancia Euclidiana entre\n" + "x1: " + P1X + "\ty1:" + P1Y + "\nx2: " + P2X + "\ty2:" + P2Y + " \nEs de " + distanciaEuclidiana);
+            Console.WriteLine("\nDistancia Manhattan entre\n" + "x1: " + P1X + "\ty1:" + P1Y + "\nx2: " + P2X + "\ty2:" + P2Y + " \nEs de " + distanciaManhattan);
+            Console.WriteLine("\nDistancia de Máximo valor absoluto\n" + "x1: " + P1X + "\ty1:" + P1Y + "\nx2: " + P2X + "\ty2:" + P2Y + " \nEs de " + distanciaVa);
 
         }
 
@@ -336,7 +352,6 @@ namespace Tarea1
             b1.SetPixel(P1Y, P1X, Color.Green);
             b1.SetPixel(P2Y, P2X, Color.Red);
             b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Camino.png"));
-            Console.WriteLine("Camino creado");
         }
     
         public void promedio(int[,] mat)
@@ -386,7 +401,6 @@ namespace Tarea1
                 }
             }
             b1.Save(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Average.png"));
-            Console.WriteLine("Promedio creado");
         }
     }
 }
